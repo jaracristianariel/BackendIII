@@ -148,3 +148,37 @@ hoy a proposito, y que iremos resolviendo modulo a modulo durante el curso.
 - **Modulos siguientes:** capa de services y repositories, manejo de errores,
   logger profesional, tests, documentacion con Swagger, uploads y Docker.
 # BackendIII
+
+
+## Mocking y carga de datos de prueba
+
+Se armó un módulo de mocking bajo `/api/mocks` para generar datos de prueba de las 4 entidades principales (usuarios, repartidores, pedidos y entregas), sin tener que cargarlos a mano.
+
+Hay dos tipos de endpoints:
+
+### 1. Ver datos simulados (no se guardan en la base)
+
+Devuelven datos falsos generados al vuelo, solo para ver el formato o probar el frontend. No modifican la base de datos.
+
+- `GET /api/mocks/users?qty=5` → usuarios simulados (con roles válidos: user, admin, courier)
+- `GET /api/mocks/couriers?qty=5` → repartidores simulados
+- `GET /api/mocks/orders?qty=5` → pedidos simulados (con estados y prioridades válidos)
+- `GET /api/mocks/deliveries?qty=5` → entregas simuladas
+
+El parámetro `qty` es opcional (por defecto genera 10, máximo 100).
+
+### 2. Cargar datos de prueba reales en MongoDB
+
+Insertan los datos generados directamente en la base de datos, respetando las relaciones entre entidades (un pedido se asocia a un usuario real, una entrega a un pedido y repartidor reales).
+
+- `POST /api/mocks/users/seed?qty=5`
+- `POST /api/mocks/couriers/seed?qty=5`
+- `POST /api/mocks/orders/seed?qty=5`
+- `POST /api/mocks/deliveries/seed?qty=5`
+
+Cada uno responde con la cantidad insertada, por ejemplo:
+```json
+{ "insertados": 5, "coleccion": "usuarios" }
+```
+
+**Nota:** si intentás cargar `orders` o `deliveries` sin que existan usuarios, repartidores o pedidos previos, el sistema los genera automáticamente antes, para que las relaciones siempre sean válidas.

@@ -3,6 +3,7 @@ import connectDB from './db.js';
 import config from './config/env.config.js';
 import logger from './config/logger.js';
 import { errorHandler } from './middlewares/error.middleware.js';
+import mocksRouter from './routes/mocks.js';
 
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
@@ -22,10 +23,7 @@ app.use('/api/couriers', couriersRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/deliveries', deliveriesRouter);
 
-if (config.NODE_ENV == 'development') {
-  const { default: userMockRouter } = await import('./routes/usersMock.js');
-  app.use('/api/mocks/users', userMockRouter);
-}
+app.use('/api/mocks', mocksRouter);
 
 // Ruta de health check basica.
 app.get('/', (req, res) => {

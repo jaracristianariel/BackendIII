@@ -11,4 +11,21 @@ const USER_ROLES = Object.freeze({
     COURIER: 'courier'
 });
 
-export { PRODUCT_STATUS, USER_ROLES };
+const ORDER_STATUS = Object.freeze({
+    PENDING: "pending",
+    IN_TRANSIT: "in_transit",
+    DELIVERED: "delivered",
+});
+
+const ORDER_PRIORITY = Object.freeze({
+    NORMAL: "normal",
+    HIGH: "high",
+});
+
+const DELIVERY_STATUS = Object.freeze({
+    ASSIGNED: "assigned",
+    IN_TRANSIT: "in_transit",
+    DELIVERED: "delivered",
+});
+
+export { PRODUCT_STATUS, USER_ROLES, ORDER_STATUS, ORDER_PRIORITY, DELIVERY_STATUS };
