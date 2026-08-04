@@ -1,11 +1,12 @@
 import UserRepository from '../repositories/users.repository.js';
+import { CustomError, UserError } from '../error/CustomError.js';
 
 class UserService {
     static async create(password, email) {
 
         if (!password || !email) {
             // habria que hacer este error personalizado tambien
-            throw new Error('Faltan datos obligatorios del usuario');
+            throw new CustomError(UserError.EmptyUserError);
         }
         // TODO: validar rol si es correcto
         const user = await UserRepository.create(password, email);

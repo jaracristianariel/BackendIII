@@ -30,9 +30,6 @@ app.get('/', (req, res) => {
   res.send('ShipNow API v1 - corriendo');
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: 'ocurrio un error inesperado' });
-});
 // Conectamos a la base y levantamos el server.
 connectDB();
 

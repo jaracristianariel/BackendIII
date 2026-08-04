@@ -1,5 +1,6 @@
 import UserService from '../services/users.service.js';
 import { UserError, CustomError } from '../error/CustomError.js';
+
 class UserController {
     static async create(req, res, next) {
         try {
@@ -22,8 +23,7 @@ class UserController {
             const users = await UserService.getAll();
             res.status(200).json(users);
         } catch (error) {
-            console.log('Error al listar users:', error.message);
-            res.status(404).json({ error: error.message });
+            next(error);
         }
     }
 
@@ -38,6 +38,7 @@ class UserController {
             if (error.name == "CastError") {
                 return next(new CustomError(UserError.ObjectIdParseError));
             }
+            next(error);
         }
     }
 }
