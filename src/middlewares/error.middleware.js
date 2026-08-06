@@ -1,5 +1,5 @@
-import logger from '../config/logger.js';
-import { CustomError } from '../error/CustomError.js';
+import logger from "../config/logger.js";
+import { CustomError } from "../error/CustomError.js";
 
 export function errorHandler(err, req, res, next) {
     // Si el error es una instancia de customError

@@ -1,6 +1,4 @@
-// CREAR UN DICCIONARIO DE ERRORES
 // User Error
-
 const UserError = {
     DuplicatedKeyError: {
         name: "DuplicatedKeyError",
@@ -23,17 +21,23 @@ const UserError = {
         statusCode: 400,
         cause: "No se recibió el email o la contraseña"
     },
-    // EmptyPasswrod, EmptyUser
-    // EmptyIdError,
     ObjectIdParseError: {
         name: "ObjectIdParseError",
         code: 12000,
         message: "el Id proporcionado no tiene formato válido",
         statusCode: 400,
-        cause: "el Id no tiene el frmato correspondiente a un ObjectId"
+        cause: "el Id no tiene el formato correspondiente a un ObjectId"
+    },
+    InvalidRoleError: {
+        name: "InvalidRoleError",
+        code: 1001,
+        message: "El rol indicado no es válido",
+        statusCode: 400,
+        cause: "El rol debe ser uno de los roles permitidos (user, admin, courier)"
     }
+};
 
-}
+// Product Error
 const ProductError = {
     EmptyProductError: {
         name: "EmptyProductError",
@@ -65,10 +69,107 @@ const ProductError = {
     }
 };
 
+// Courier Error
+const CourierError = {
+    EmptyCourierError: {
+        name: "EmptyCourierError",
+        code: 4000,
+        message: "Faltan datos obligatorios del repartidor",
+        statusCode: 400,
+        cause: "No se recibió el nombre o la zona"
+    },
+    CourierNotFoundError: {
+        name: "CourierNotFoundError",
+        code: 4001,
+        message: "Repartidor no existente",
+        statusCode: 404,
+        cause: "El repartidor solicitado no existe o no se puede recuperar"
+    },
+    ObjectIdParseError: {
+        name: "ObjectIdParseError",
+        code: 4002,
+        message: "el Id proporcionado no tiene formato válido",
+        statusCode: 400,
+        cause: "el Id no tiene el formato correspondiente a un ObjectId"
+    }
+};
 
-//CREAR UNA CLASE PERSONALIZADA DE MANEJO DE ERRORES
-//name, code (opcional), mensaje, statusCode, cause (opcional)
+// Order Error
+const OrderError = {
+    EmptyOrderError: {
+        name: "EmptyOrderError",
+        code: 5000,
+        message: "Faltan datos obligatorios del pedido",
+        statusCode: 400,
+        cause: "No se recibió el cliente, la dirección o el peso"
+    },
+    InvalidWeightError: {
+        name: "InvalidWeightError",
+        code: 5001,
+        message: "El peso debe ser un número mayor a 0",
+        statusCode: 400,
+        cause: "El peso recibido no es válido"
+    },
+    OrderNotFoundError: {
+        name: "OrderNotFoundError",
+        code: 5002,
+        message: "Pedido no existente",
+        statusCode: 404,
+        cause: "El pedido solicitado no existe o no se puede recuperar"
+    },
+    ObjectIdParseError: {
+        name: "ObjectIdParseError",
+        code: 5003,
+        message: "el Id proporcionado no tiene formato válido",
+        statusCode: 400,
+        cause: "el Id no tiene el formato correspondiente a un ObjectId"
+    }
+};
 
+// Delivery Error
+const DeliveryError = {
+    EmptyDeliveryError: {
+        name: "EmptyDeliveryError",
+        code: 6000,
+        message: "Faltan datos obligatorios de la entrega",
+        statusCode: 400,
+        cause: "No se recibió el pedido o el repartidor asociado"
+    },
+    DeliveryNotFoundError: {
+        name: "DeliveryNotFoundError",
+        code: 6001,
+        message: "Entrega no existente",
+        statusCode: 404,
+        cause: "La entrega solicitada no existe o no se puede recuperar"
+    },
+    ObjectIdParseError: {
+        name: "ObjectIdParseError",
+        code: 6002,
+        message: "el Id proporcionado no tiene formato válido",
+        statusCode: 400,
+        cause: "el Id no tiene el formato correspondiente a un ObjectId"
+    }
+};
+
+// Mock Error (para el módulo de datos de prueba)
+const MockError = {
+    InvalidQtyError: {
+        name: "InvalidQtyError",
+        code: 7000,
+        message: "La cantidad solicitada no es válida",
+        statusCode: 400,
+        cause: "qty debe ser un número entero mayor a 0 (y menor o igual al máximo permitido)"
+    },
+    MockInsertError: {
+        name: "MockInsertError",
+        code: 7001,
+        message: "Ocurrió un error al insertar los datos de prueba",
+        statusCode: 500,
+        cause: "Falló la carga de los datos simulados en MongoDB"
+    }
+};
+
+// Clase personalizada de manejo de errores
 class CustomError extends Error {
     constructor({ name, code, message, statusCode, cause }) {
         super(message, { cause });
@@ -78,4 +179,4 @@ class CustomError extends Error {
     }
 }
 
-export { CustomError, UserError, ProductError };
+export { CustomError, UserError, ProductError, CourierError, OrderError, DeliveryError, MockError };

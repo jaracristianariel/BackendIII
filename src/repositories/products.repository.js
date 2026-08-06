@@ -1,4 +1,4 @@
-import Product from '../models/product.js';
+import Product from "../models/product.js";
 
 class ProductRepository {
     static async create(data) {
@@ -11,6 +11,14 @@ class ProductRepository {
 
     static async findById(id) {
         return await Product.findById(id);
+    }
+
+    static async updateById(id, data) {
+        return await Product.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+    }
+
+    static async deleteById(id) {
+        return await Product.findByIdAndDelete(id);
     }
 }
 

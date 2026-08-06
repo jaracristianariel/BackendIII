@@ -1,14 +1,8 @@
-import User from '../models/user.js';
+import User from "../models/user.js";
 
 class UserRepository {
-    static async create(password, email) {
-        console.log(email, password);
-
-        const user = await User.create({
-            password,
-            email,
-        });
-
+    static async create(data) {
+        const user = await User.create(data);
         return user;
     }
 
@@ -18,6 +12,14 @@ class UserRepository {
 
     static async findById(id) {
         return await User.findById(id);
+    }
+
+    static async updateById(id, data) {
+        return await User.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+    }
+
+    static async deleteById(id) {
+        return await User.findByIdAndDelete(id);
     }
 
     static async insertMany(users) {

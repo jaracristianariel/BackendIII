@@ -1,5 +1,5 @@
-import ProductService from '../services/products.service.js';
-import { CustomError, ProductError } from '../error/CustomError.js';
+import ProductService from "../services/products.service.js";
+import { CustomError, ProductError } from "../error/CustomError.js";
 
 class ProductController {
     static async create(req, res, next) {
@@ -30,6 +30,37 @@ class ProductController {
                 return next(new CustomError(ProductError.ProductNotFoundError));
             }
             res.json(product);
+        } catch (error) {
+            if (error.name === 'CastError') {
+                return next(new CustomError(ProductError.ObjectIdParseError));
+            }
+            next(error);
+        }
+    }
+
+    static async update(req, res, next) {
+        try {
+            const { name, price, stock, status } = req.body;
+            const product = await ProductService.update(req.params.id, name, price, stock, status);
+            if (!product) {
+                return next(new CustomError(ProductError.ProductNotFoundError));
+            }
+            res.json(product);
+        } catch (error) {
+            if (error.name === 'CastError') {
+                return next(new CustomError(ProductError.ObjectIdParseError));
+            }
+            next(error);
+        }
+    }
+
+    static async delete(req, res, next) {
+        try {
+            const product = await ProductService.delete(req.params.id);
+            if (!product) {
+                return next(new CustomError(ProductError.ProductNotFoundError));
+            }
+            res.status(200).json({ message: 'Producto eliminado', product });
         } catch (error) {
             if (error.name === 'CastError') {
                 return next(new CustomError(ProductError.ObjectIdParseError));

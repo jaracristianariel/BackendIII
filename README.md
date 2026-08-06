@@ -182,3 +182,27 @@ Cada uno responde con la cantidad insertada, por ejemplo:
 ```
 
 **Nota:** si intentás cargar `orders` o `deliveries` sin que existan usuarios, repartidores o pedidos previos, el sistema los genera automáticamente antes, para que las relaciones siempre sean válidas.
+
+
+## Manejo de errores
+
+Todos los errores de la API responden con una estructura uniforme desde un middleware centralizado (`src/middlewares/error.middleware.js`):
+
+```json
+{
+  "status": "error",
+  "message": "Descripción legible del error",
+  "cause": "Detalle técnico de qué lo provocó"
+}
+```
+
+Cada entidad tiene su propio diccionario de errores personalizados en `src/error/CustomError.js` (`UserError`, `ProductError`, `CourierError`, `OrderError`, `DeliveryError`, `MockError`), con su `statusCode` correspondiente (400 para datos inválidos, 404 para no encontrado, 409 para duplicados, etc.). Los errores se detectan en la capa de `service`, y viajan con `next(error)` hasta el middleware — ninguna ruta ni controller responde errores por su cuenta.
+
+### Cómo probar casos inválidos
+
+- `POST /api/couriers` sin `name` o `zone` → `400 EmptyCourierError`
+- `POST /api/orders` sin datos, o con `weight` no numérico → `400 EmptyOrderError` / `InvalidWeightError`
+- `POST /api/deliveries` sin `orderId` o `courierId` → `400 EmptyDeliveryError`
+- `GET /api/orders/:id` con un id que no es un ObjectId válido → `400 ObjectIdParseError`
+- `GET /api/mocks/users?qty=-5` o `?qty=abc` → `400 InvalidQtyError` (cantidad inválida o negativa)
+- Si falla la inserción en MongoDB al usar `/api/mocks/*/seed`, responde `500 MockInsertError` con el detalle del fallo

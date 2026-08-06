@@ -1,11 +1,12 @@
 import MocksService from '../services/mocks.service.js';
 
 const DEFAULT_QTY = 10;
-const MAX_QTY = 100;
 
+// Si no viene qty, usamos el default. Si viene, lo convertimos a número
+// (aunque sea invalido, ej: NaN) y que el service decida si lo acepta o no.
 function parseQty(req) {
-    const qty = Number(req.query.qty) || DEFAULT_QTY;
-    return Math.min(Math.max(qty, 1), MAX_QTY);
+    if (req.query.qty === undefined) return DEFAULT_QTY;
+    return Number(req.query.qty);
 }
 
 class MocksController {
