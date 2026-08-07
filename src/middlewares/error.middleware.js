@@ -1,11 +1,11 @@
 import logger from "../config/logger.js";
-import { CustomError } from "../error/CustomError.js";
+import { CustomError, UserError } from "../error/CustomError.js";
 
 export function errorHandler(err, req, res, next) {
     // Si el error es una instancia de customError
 
     if (err instanceof CustomError) {
-        logger.warning(err);
+        logger.warning(UserError.DuplicatedKeyError);
     } else {
         logger.error(err);
     }

@@ -4,6 +4,7 @@ import config from './config/env.config.js';
 import logger from './config/logger.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import mocksRouter from './routes/mocks.js';
+import logsRouter from './routes/logs.js';
 
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
@@ -24,6 +25,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/deliveries', deliveriesRouter);
 
 app.use('/api/mocks', mocksRouter);
+app.use('/api/logs', logsRouter);
 
 // Ruta de health check basica.
 app.get('/', (req, res) => {
@@ -32,6 +34,16 @@ app.get('/', (req, res) => {
 
 // Conectamos a la base y levantamos el server.
 connectDB();
+
+// Ruta inexistente: no matcheo con ningun router de arriba.
+app.use((req, res, next) => {
+    logger.warning(`Ruta inexistente: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({
+        status: 'error',
+        message: 'Ruta no encontrada',
+        cause: `No existe ${req.method} ${req.originalUrl}`,
+    });
+});
 
 app.use(errorHandler);
 

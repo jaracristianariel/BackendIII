@@ -206,3 +206,36 @@ Cada entidad tiene su propio diccionario de errores personalizados en `src/error
 - `GET /api/orders/:id` con un id que no es un ObjectId válido → `400 ObjectIdParseError`
 - `GET /api/mocks/users?qty=-5` o `?qty=abc` → `400 InvalidQtyError` (cantidad inválida o negativa)
 - Si falla la inserción en MongoDB al usar `/api/mocks/*/seed`, responde `500 MockInsertError` con el detalle del fallo
+
+
+## Logging (Winston)
+
+El proyecto usa **Winston** como logger centralizado (`src/config/logger.js`), reemplazando los `console.log` sueltos.
+
+### Niveles disponibles (de menos a más severo)
+
+`debug` → `http` → `info` → `warning` → `error` → `fatal`
+
+- **debug**: detalle interno de bajo nivel (ej: resultado de un servicio simulado)
+- **http**: nivel reservado para tráfico HTTP
+- **info**: eventos normales del negocio (servidor iniciado, conexión a Mongo, usuario/producto creado, notificación enviada, datos de prueba insertados)
+- **warning**: errores esperados/de negocio (ej: usuario no encontrado, cantidad inválida en mocks, ruta inexistente)
+- **error**: errores inesperados del servidor
+- **fatal**: fallas críticas de arranque o conexión a la base
+
+### Comportamiento según el entorno
+
+- **Desarrollo** (`NODE_ENV=development`): se muestran todos los niveles, incluido `debug`.
+- **Producción** (`NODE_ENV=production`): solo se registran desde `info` para arriba (se omiten `debug` y `http`).
+
+### Cómo probar el endpoint de logs
+
+Dispara un log de cada uno de los 6 niveles. No representa una funcionalidad real del negocio, es solo para verificar la configuración. Revisá la consola y la carpeta `/logs` después de llamarlo.
+
+### Dónde se guardan los logs
+
+En la carpeta `/logs`, con rotación diaria por fecha:
+- `info-YYYY-MM-DD.log`: todo desde `info` para arriba
+- `error-YYYY-MM-DD.log`: **solo** `error` y `fatal`
+
+Estos archivos se generan automáticamente y **no se suben al repositorio** (están en `.gitignore`), ya que son datos generados en tiempo de ejecución, no código fuente.

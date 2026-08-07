@@ -1,4 +1,5 @@
 import UserService from "../services/users.service.js";
+import logger from "../config/logger.js";
 import { UserError, CustomError } from "../error/CustomError.js";
 
 class UserController {
@@ -7,7 +8,7 @@ class UserController {
             const { first_name, last_name, email, password, role } = req.body;
             const user = await UserService.create(first_name, last_name, email, password, role);
 
-            console.log('User creado:', user._id);
+            logger.info(`User creado: ${user._id}`);
             res.status(201).json(user);
         } catch (error) {
             if (error.code == 11000) {

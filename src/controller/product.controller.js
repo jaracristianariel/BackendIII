@@ -1,4 +1,5 @@
 import ProductService from "../services/products.service.js";
+import logger from "../config/logger.js";
 import { CustomError, ProductError } from "../error/CustomError.js";
 
 class ProductController {
@@ -7,7 +8,7 @@ class ProductController {
             const { name, price, stock, status } = req.body;
             const product = await ProductService.create(name, price, stock, status);
 
-            console.log('Product creado:', product._id);
+            logger.info(`Product creado: ${product._id}`);
             res.status(201).json(product);
         } catch (error) {
             next(error);

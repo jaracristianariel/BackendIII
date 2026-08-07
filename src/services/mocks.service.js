@@ -4,11 +4,10 @@ import CourierRepository from "../repositories/couriers.repository.js";
 import OrderRepository from "../repositories/orders.repository.js";
 import DeliveryRepository from "../repositories/deliveries.repository.js";
 import { CustomError, MockError } from "../error/CustomError.js";
+import logger from "../config/logger.js";
 
 const MAX_QTY = 100;
 
-// Valida que qty sea un entero positivo, dentro del máximo permitido.
-// Si no lo es, corta la ejecución con un error controlado (no lo "arregla" en silencio).
 function assertValidQty(qty) {
     if (!Number.isInteger(qty) || qty <= 0 || qty > MAX_QTY) {
         throw new CustomError(MockError.InvalidQtyError);
@@ -19,21 +18,25 @@ class MocksService {
     // ---- Simulados: NO se guardan en la base ----
     static getUsers(qty) {
         assertValidQty(qty);
+        logger.debug(`Generando ${qty} usuarios simulados (sin guardar)`);
         return Array.from({ length: qty }, () => generateUser());
     }
 
     static getCouriers(qty) {
         assertValidQty(qty);
+        logger.debug(`Generando ${qty} couriers simulados (sin guardar)`);
         return Array.from({ length: qty }, () => generateCourier());
     }
 
     static getOrders(qty) {
         assertValidQty(qty);
+        logger.debug(`Generando ${qty} orders simuladas (sin guardar)`);
         return Array.from({ length: qty }, () => generateOrder());
     }
 
     static getDeliveries(qty) {
         assertValidQty(qty);
+        logger.debug(`Generando ${qty} deliveries simuladas (sin guardar)`);
         return Array.from({ length: qty }, () => generateDelivery());
     }
 
@@ -42,7 +45,9 @@ class MocksService {
         assertValidQty(qty);
         try {
             const users = Array.from({ length: qty }, () => generateUser());
-            return await UserRepository.insertMany(users);
+            const inserted = await UserRepository.insertMany(users);
+            logger.info(`Seed: se insertaron ${inserted.length} usuarios de prueba`);
+            return inserted;
         } catch (error) {
             throw new CustomError({ ...MockError.MockInsertError, cause: error.message });
         }
@@ -52,7 +57,9 @@ class MocksService {
         assertValidQty(qty);
         try {
             const couriers = Array.from({ length: qty }, () => generateCourier());
-            return await CourierRepository.insertMany(couriers);
+            const inserted = await CourierRepository.insertMany(couriers);
+            logger.info(`Seed: se insertaron ${inserted.length} couriers de prueba`);
+            return inserted;
         } catch (error) {
             throw new CustomError({ ...MockError.MockInsertError, cause: error.message });
         }
@@ -71,9 +78,11 @@ class MocksService {
                 return generateOrder(randomUser._id);
             });
 
-            return await OrderRepository.insertMany(orders);
+            const inserted = await OrderRepository.insertMany(orders);
+            logger.info(`Seed: se insertaron ${inserted.length} orders de prueba`);
+            return inserted;
         } catch (error) {
-            if (error instanceof CustomError) throw error; // ya viene bien formado (ej: InvalidQtyError de seedUsers)
+            if (error instanceof CustomError) throw error;
             throw new CustomError({ ...MockError.MockInsertError, cause: error.message });
         }
     }
@@ -97,7 +106,9 @@ class MocksService {
                 return generateDelivery(randomOrder._id, randomCourier._id);
             });
 
-            return await DeliveryRepository.insertMany(deliveries);
+            const inserted = await DeliveryRepository.insertMany(deliveries);
+            logger.info(`Seed: se insertaron ${inserted.length} deliveries de prueba`);
+            return inserted;
         } catch (error) {
             if (error instanceof CustomError) throw error;
             throw new CustomError({ ...MockError.MockInsertError, cause: error.message });
