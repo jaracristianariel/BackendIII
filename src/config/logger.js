@@ -1,12 +1,10 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-import winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
-import config from './env.config.js';
+import config from "./env.config.js";
+import { resolveFromRoot } from "../utils/paths.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const logsDir = path.join(__dirname, '../../logs');
+const logsDir = resolveFromRoot(import.meta.url, "../../logs");
 
 const customLevels = {
     levels: {
