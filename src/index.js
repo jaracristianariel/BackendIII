@@ -5,6 +5,8 @@ import logger from './config/logger.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import mocksRouter from './routes/mocks.js';
 import logsRouter from './routes/logs.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
@@ -26,6 +28,7 @@ app.use('/api/deliveries', deliveriesRouter);
 
 app.use('/api/mocks', mocksRouter);
 app.use('/api/logs', logsRouter);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Ruta de health check basica.
 app.get('/', (req, res) => {

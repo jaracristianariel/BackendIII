@@ -6,39 +6,9 @@
     "auditLog": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\.f336d3cef7aa1667c6a94829645de3c1498db48d-audit.json",
     "files": [
         {
-            "date": 1785504548843,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-07-31.log",
-            "hash": "bc158fea1b92a0b47df837a7fe683dda30f997a8d8f757a2eb5994eeced4b77c"
-        },
-        {
-            "date": 1785615976873,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-01.log",
-            "hash": "dd2b57c39d59377f15f9ab26ca33819a7a4ebe5ff6ed97ad2aa3259c298df323"
-        },
-        {
-            "date": 1785755220198,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-03.log",
-            "hash": "c9139da2be5966b843527b3132760562c9c7b8033597e231f1d763e006f5e07a"
-        },
-        {
-            "date": 1785868577528,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-04.log",
-            "hash": "8c33fde49f820ce7e9cc0fbc22003214f53937a0ee89fad9fa4371ea42662f88"
-        },
-        {
-            "date": 1785932933693,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-05.log",
-            "hash": "957844971d23df8cd3175124bad426dfacdb519e240e9d68fe3ea11b3012d985"
-        },
-        {
-            "date": 1786022686151,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-06.log",
-            "hash": "9faa53529d20cf41db415348d2bddacf699b80f002722a53f104ac01a59a166a"
-        },
-        {
-            "date": 1786103395799,
-            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-07.log",
-            "hash": "0f39fd8b84dfb5312fc62e13d0d72bc8bc1a2aa43a934340208dd99cfd4da30d"
+            "date": 1788008553825,
+            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-29.log",
+            "hash": "b176902deb444ab96a67c8108461b325cd9d874a5764255d5fc92c55b9a3e0f0"
         }
     ],
     "hashType": "sha256"

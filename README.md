@@ -239,3 +239,33 @@ En la carpeta `/logs`, con rotación diaria por fecha:
 - `error-YYYY-MM-DD.log`: **solo** `error` y `fatal`
 
 Estos archivos se generan automáticamente y **no se suben al repositorio** (están en `.gitignore`), ya que son datos generados en tiempo de ejecución, no código fuente.
+## Documentación de la API (Swagger)
+
+La API está documentada con **Swagger/OpenAPI 3.0**, usando `swagger-jsdoc` (lee comentarios `@swagger` de cada ruta) y `swagger-ui-express` (sirve la interfaz interactiva).
+
+### Cómo acceder
+
+Con el servidor corriendo (`npm run dev`), entrá a: http://localhost:8080/api/docs
+
+
+Desde ahí podés ver y **probar en vivo** cada endpoint (botón "Try it out"), sin necesidad de Postman.
+
+### Qué está documentado
+
+La documentación está organizada en 5 grupos (tags):
+
+- **Users**: CRUD completo de usuarios
+- **Orders**: CRUD de pedidos + actualización de estado
+- **Deliveries**: CRUD de entregas + actualización de estado
+- **Mocks**: generación de datos simulados (`GET`, sin guardar) y carga de datos de prueba reales (`POST /seed`)
+- **Logger**: endpoint interno de validación del sistema de logs (`GET /api/logs/test`) — **no es una funcionalidad de negocio**, solo sirve para confirmar que Winston está bien configurado
+
+Cada endpoint documenta: método HTTP, ruta, descripción, parámetros (path/query), body esperado, respuesta exitosa y posibles errores — reflejando el comportamiento real de la API (los mismos `CustomError` definidos en `src/error/CustomError.js`).
+
+### Nota sobre autenticación
+
+El proyecto no implementa autenticación (no hay login ni rutas protegidas), por lo que no se documentan errores 401/403 — no existen en el comportamiento real de la API.
+
+### Schemas reutilizables
+
+`User`, `Order`, `OrderItem`, `Delivery`, `ErrorResponse`, `SuccessResponse`, `SeedResponse` — definidos en `src/config/swagger.js`, separados de la lógica de las rutas.

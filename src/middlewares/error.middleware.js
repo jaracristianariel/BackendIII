@@ -5,7 +5,7 @@ export function errorHandler(err, req, res, next) {
     // Si el error es una instancia de customError
 
     if (err instanceof CustomError) {
-        logger.warning(UserError.DuplicatedKeyError);
+        logger.warning(err);
     } else {
         logger.error(err);
     }
