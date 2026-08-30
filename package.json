@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node src/index.js"
+    "dev": "node src/index.js",
+    "test": "mocha"
   },
   "keywords": [
     "coderhouse",
@@ -27,6 +28,9 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.5.0"
+    "@faker-js/faker": "^10.5.0",
+    "chai": "^6.2.2",
+    "mocha": "^11.8.0",
+    "supertest": "^7.2.2"
   }
 }

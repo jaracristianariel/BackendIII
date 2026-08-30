@@ -1,0 +1,9 @@
+{
+    "require": [
+        "test/setup.js",
+        "test/hooks/db.js"
+    ],
+    "spec": "test/functional/**/*.test.js",
+    "timeout": 20000,
+    "exit": true
+}

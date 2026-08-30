@@ -269,3 +269,35 @@ El proyecto no implementa autenticación (no hay login ni rutas protegidas), por
 ### Schemas reutilizables
 
 `User`, `Order`, `OrderItem`, `Delivery`, `ErrorResponse`, `SuccessResponse`, `SeedResponse` — definidos en `src/config/swagger.js`, separados de la lógica de las rutas.
+
+## Testing (Mocha + Chai + Supertest)
+
+El proyecto cuenta con una suite de tests funcionales que valida los endpoints principales de la API.
+
+### Entorno de testing
+
+Los tests corren contra una **base de datos separada** de la de desarrollo (`ShipNowTest` en vez de la real), usando variables de entorno propias en `.env.test` (no se sube al repositorio; hay un `.env.test.example` como plantilla). Al correr los tests, `NODE_ENV=test` hace que la app cargue automáticamente `.env.test` en vez de `.env`.
+
+### Cómo ejecutar los tests
+
+```bash
+npm test
+```
+
+Esto corre Mocha con la configuración de `.mocharc.json`, que:
+1. Fuerza `NODE_ENV=test` (`test/setup.js`)
+2. Conecta a la base de testing antes de empezar, y la desconecta al final (`test/hooks/db.js`)
+3. Ejecuta todos los archivos en `test/functional/**/*.test.js`
+
+### Qué está cubierto
+
+- **Users**: listado, creación (casos exitoso, datos incompletos, rol inválido)
+- **Orders**: creación, consulta por id, actualización de estado (casos exitosos y de error: datos incompletos, peso inválido, id inválido, recurso inexistente)
+- **Mocks**: generación simulada (`GET`, sin persistir) y carga real (`POST /seed`), incluyendo cantidades inválidas
+- **Logger**: endpoint de prueba de los 6 niveles
+- **Swagger**: que la documentación interactiva responda correctamente
+- **Ruta inexistente**: formato de error 404 uniforme
+
+### Limpieza de datos
+
+Cada grupo de tests limpia las colecciones relevantes de la base de testing antes y/o después de correr (`test/helpers/cleanup.js`), para que los tests sean repetibles y no dependan de datos previos.
