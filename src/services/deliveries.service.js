@@ -4,6 +4,8 @@ import CourierRepository from "../repositories/couriers.repository.js";
 import { CustomError, DeliveryError, OrderError, CourierError } from "../error/CustomError.js";
 import { DELIVERY_STATUS } from "../constants/index.js";
 import { getTrackingStatus } from "./trackingProvider.js";
+import { assertFilePresent, buildFileMetadata, deleteFileSilently } from "./uploads.service.js";
+import { UploadError } from "../error/CustomError.js";
 
 class DeliveryService {
     static async create(orderId, courierId, status) {
@@ -54,6 +56,25 @@ class DeliveryService {
 
     static async delete(id) {
         return await DeliveryRepository.deleteById(id);
+    }
+    
+    static async uploadReceipt(id, file) {
+        assertFilePresent(file);
+
+        const delivery = await DeliveryRepository.findById(id);
+        if (!delivery) {
+            deleteFileSilently(file.path);
+            throw new CustomError(DeliveryError.DeliveryNotFoundError);
+        }
+
+        const metadata = buildFileMetadata(file);
+
+        try {
+            return await DeliveryRepository.setReceipt(id, metadata);
+        } catch (error) {
+            deleteFileSilently(file.path);
+            throw new CustomError({ ...UploadError.UploadFailedError, cause: error.message });
+        }
     }
 }
 

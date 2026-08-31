@@ -2,6 +2,8 @@ import OrderRepository from "../repositories/orders.repository.js";
 import { CustomError, OrderError } from "../error/CustomError.js";
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
 import sendNotification from "./notifications.js";
+import { assertFilePresent, buildFileMetadata, deleteFileSilently } from "./uploads.service.js";
+import { UploadError } from "../error/CustomError.js";
 
 class OrderService {
     static async create(customerName, customer, address, weight, courierId, items, priority) {
@@ -52,6 +54,25 @@ class OrderService {
 
     static async delete(id) {
         return await OrderRepository.deleteById(id);
+    }
+    
+    static async uploadReceipt(id, file) {
+        assertFilePresent(file);
+
+        const order = await OrderRepository.findById(id);
+        if (!order) {
+            deleteFileSilently(file.path);
+            throw new CustomError(OrderError.OrderNotFoundError);
+        }
+
+        const metadata = buildFileMetadata(file);
+
+        try {
+            return await OrderRepository.setReceipt(id, metadata);
+        } catch (error) {
+            deleteFileSilently(file.path);
+            throw new CustomError({ ...UploadError.UploadFailedError, cause: error.message });
+        }
     }
 }
 

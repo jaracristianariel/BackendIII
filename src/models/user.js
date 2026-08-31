@@ -7,7 +7,18 @@ const userSchema = new mongoose.Schema({
   last_name: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
-  role: { type: String, default: USER_ROLES.USER }, 
+  role: { type: String, default: USER_ROLES.USER },
+  documents: [
+    {
+      originalName: { type: String },
+      generatedName: { type: String },
+      path: { type: String },
+      mimeType: { type: String },
+      size: { type: Number },
+      documentType: { type: String },
+      uploadedAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 export default mongoose.model("User", userSchema);

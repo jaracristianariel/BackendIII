@@ -24,6 +24,13 @@ class DeliveryRepository {
     static async insertMany(deliveries) {
         return await Delivery.insertMany(deliveries);
     }
+    static async setReceipt(id, receiptMeta) {
+        return await Delivery.findByIdAndUpdate(
+            id,
+            { receipt: receiptMeta },
+            { new: true, runValidators: true }
+        );
+    }
 }
 
 export default DeliveryRepository;

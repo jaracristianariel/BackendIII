@@ -62,6 +62,18 @@ class DeliveryController {
             next(error);
         }
     }
+
+    static async uploadReceipt(req, res, next) {
+        try {
+            const delivery = await DeliveryService.uploadReceipt(req.params.id, req.file);
+            res.status(201).json(delivery);
+        } catch (error) {
+            if (error.name === 'CastError') {
+                return next(new CustomError(DeliveryError.ObjectIdParseError));
+            }
+            next(error);
+        }
+    }
 }
 
 export default DeliveryController;

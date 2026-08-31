@@ -62,6 +62,17 @@ class OrderController {
             next(error);
         }
     }
+    static async uploadReceipt(req, res, next) {
+        try {
+            const order = await OrderService.uploadReceipt(req.params.id, req.file);
+            res.status(201).json(order);
+        } catch (error) {
+            if (error.name === 'CastError') {
+                return next(new CustomError(OrderError.ObjectIdParseError));
+            }
+            next(error);
+        }
+    }
 }
 
 export default OrderController;

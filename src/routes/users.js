@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 
 import UserController from "../controller/user.controller.js";
+import { uploadUserDocument } from "../config/upload.js";
 
 /**
  * @swagger
@@ -185,5 +186,49 @@ router.put('/:id', UserController.update);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.delete('/:id', UserController.delete);
+
+/**
+ * @swagger
+ * /api/users/{id}/documents:
+ *   post:
+ *     tags: [Users]
+ *     summary: Sube un documento asociado a un usuario (DNI, licencia, etc.)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: ObjectId de Mongo del usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [document]
+ *             properties:
+ *               document: { type: string, format: binary }
+ *               documentType: { type: string, enum: [dni, license, other], example: dni }
+ *     responses:
+ *       201:
+ *         description: Documento cargado, usuario actualizado con el metadata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Falta el archivo, tipo no permitido, tamaño excedido, o tipo de documento inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Usuario no existente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post('/:id/documents', uploadUserDocument.single('document'), UserController.uploadDocument);
 
 export default router;

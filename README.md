@@ -301,3 +301,52 @@ Esto corre Mocha con la configuración de `.mocharc.json`, que:
 ### Limpieza de datos
 
 Cada grupo de tests limpia las colecciones relevantes de la base de testing antes y/o después de correr (`test/helpers/cleanup.js`), para que los tests sean repetibles y no dependan de datos previos.
+
+## Carga de archivos (Multer)
+
+El proyecto permite subir documentos y comprobantes usando **Multer**, con la configuración centralizada en `src/config/upload.js` (separada de las rutas).
+
+### Restricciones
+
+- Tipos de archivo permitidos: **PDF, JPG, PNG**
+- Tamaño máximo: **5MB**
+- En la base de datos solo se guardan **metadatos** (nombre original, nombre generado, ruta, tipo, tamaño, fecha) — nunca el archivo binario en sí. Los archivos reales quedan en la carpeta `uploads/` (excluida del repositorio vía `.gitignore`).
+
+### Endpoints
+
+**Documento de usuario** (ej: DNI, licencia):
+
+POST /api/users/:id/documents
+Content-Type: multipart/form-data
+
+document: <archivo> (requerido)
+documentType: dni | license | other (opcional)
+
+
+**Comprobante de un pedido:**
+
+POST /api/orders/:id/receipt
+Content-Type: multipart/form-data
+
+receipt: <archivo> (requerido)
+
+
+**Comprobante de una entrega:**
+
+POST /api/deliveries/:id/receipt
+Content-Type: multipart/form-data
+
+receipt: <archivo> (requerido)
+
+
+### Errores posibles
+
+Todos responden con el formato de error estándar del proyecto (`status`, `message`, `cause`):
+
+- `400`: no se envió archivo, tipo no permitido, tamaño excedido, o `documentType` inválido
+- `404`: la entidad (usuario/pedido/entrega) no existe
+- `500`: falló el guardado del archivo o sus metadatos
+
+### Documentación y tests
+
+Los 3 endpoints están documentados en Swagger (`/api/docs`) como `multipart/form-data`, y cubiertos por tests funcionales en `test/functional/uploads.test.js` (carga exitosa, archivo faltante, tipo inválido, `documentType` inválido, entidad inexistente).

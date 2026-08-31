@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 
 import DeliveryController from "../controller/delivery.controller.js";
+import { uploadReceipt } from "../config/upload.js";
 
 /**
  * @swagger
@@ -182,5 +183,48 @@ router.patch('/:id/status', DeliveryController.updateStatus);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.delete('/:id', DeliveryController.delete);
+
+/**
+ * @swagger
+ * /api/deliveries/{id}/receipt:
+ *   post:
+ *     tags: [Deliveries]
+ *     summary: Sube el comprobante asociado a una entrega
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: ObjectId de Mongo de la entrega
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [receipt]
+ *             properties:
+ *               receipt: { type: string, format: binary }
+ *     responses:
+ *       201:
+ *         description: Comprobante cargado, entrega actualizada con el metadata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Delivery'
+ *       400:
+ *         description: Falta el archivo, tipo no permitido, o tamaño excedido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Entrega no existente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post('/:id/receipt', uploadReceipt.single('receipt'), DeliveryController.uploadReceipt);
 
 export default router;

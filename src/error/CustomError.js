@@ -151,6 +151,45 @@ const DeliveryError = {
     }
 };
 
+// Upload Error
+const UploadError = {
+    FileRequiredError: {
+        name: "FileRequiredError",
+        code: 8000,
+        message: "No se recibió ningún archivo",
+        statusCode: 400,
+        cause: "El campo del archivo llegó vacío"
+    },
+    InvalidFileTypeError: {
+        name: "InvalidFileTypeError",
+        code: 8001,
+        message: "El tipo de archivo no está permitido",
+        statusCode: 400,
+        cause: "Solo se aceptan PDF, JPG y PNG"
+    },
+    FileTooLargeError: {
+        name: "FileTooLargeError",
+        code: 8002,
+        message: "El archivo supera el tamaño máximo permitido",
+        statusCode: 400,
+        cause: "El tamaño máximo permitido es 5MB"
+    },
+    InvalidDocumentTypeError: {
+        name: "InvalidDocumentTypeError",
+        code: 8003,
+        message: "El tipo de documento indicado no es válido",
+        statusCode: 400,
+        cause: "El tipo de documento debe ser uno de los permitidos (dni, license, other)"
+    },
+    UploadFailedError: {
+        name: "UploadFailedError",
+        code: 8004,
+        message: "Ocurrió un error al guardar el archivo",
+        statusCode: 500,
+        cause: "Falló el guardado del archivo o sus metadatos"
+    }
+};
+
 // Mock Error (para el módulo de datos de prueba)
 const MockError = {
     InvalidQtyError: {
@@ -179,4 +218,4 @@ class CustomError extends Error {
     }
 }
 
-export { CustomError, UserError, ProductError, CourierError, OrderError, DeliveryError, MockError };
+export { CustomError, UserError, ProductError, CourierError, OrderError, DeliveryError, MockError, UploadError };

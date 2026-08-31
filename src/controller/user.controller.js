@@ -75,6 +75,18 @@ class UserController {
             next(error);
         }
     }
+    static async uploadDocument(req, res, next) {
+        try {
+            const { documentType } = req.body;
+            const user = await UserService.uploadDocument(req.params.id, req.file, documentType);
+            res.status(201).json(user);
+        } catch (error) {
+            if (error.name === 'CastError') {
+                return next(new CustomError(UserError.ObjectIdParseError));
+            }
+            next(error);
+        }
+    }
 }
 
 export default UserController;

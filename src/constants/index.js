@@ -27,5 +27,10 @@ const DELIVERY_STATUS = Object.freeze({
     IN_TRANSIT: "in_transit",
     DELIVERED: "delivered",
 });
+const DOCUMENT_TYPES = Object.freeze({
+    DNI: "dni",
+    LICENSE: "license",
+    OTHER: "other",
+});
 
-export { PRODUCT_STATUS, USER_ROLES, ORDER_STATUS, ORDER_PRIORITY, DELIVERY_STATUS };
+export { PRODUCT_STATUS, USER_ROLES, ORDER_STATUS, ORDER_PRIORITY, DELIVERY_STATUS, DOCUMENT_TYPES };

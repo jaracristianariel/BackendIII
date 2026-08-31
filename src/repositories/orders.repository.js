@@ -24,6 +24,13 @@ class OrderRepository {
     static async insertMany(orders) {
         return await Order.insertMany(orders);
     }
+    static async setReceipt(id, receiptMeta) {
+        return await Order.findByIdAndUpdate(
+            id,
+            { receipt: receiptMeta },
+            { new: true, runValidators: true }
+        );
+    }
 }
 
 export default OrderRepository;

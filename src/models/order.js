@@ -17,6 +17,14 @@ const orderSchema = new mongoose.Schema({
     },
   ],
   courierId: { type: mongoose.Schema.Types.ObjectId, ref: "Courier" },
+  receipt: {
+    originalName: { type: String },
+    generatedName: { type: String },
+    path: { type: String },
+    mimeType: { type: String },
+    size: { type: Number },
+    uploadedAt: { type: Date },
+  },
 });
 
 export default mongoose.model("Order", orderSchema);
