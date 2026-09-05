@@ -23,10 +23,14 @@ describe('Users API', () => {
             const res = await request(app).get('/api/users');
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('array');
-            expect(res.body.length).to.be.greaterThan(0);
+            expect(res.body).to.have.property('data');
+            expect(res.body.data).to.be.an('array');
+            expect(res.body.data.length).to.be.greaterThan(0);
+            expect(res.body).to.have.property('total');
+            expect(res.body).to.have.property('page');
+            expect(res.body).to.have.property('totalPages');
 
-            const user = res.body[0];
+            const user = res.body.data[0];
             expect(user).to.have.property('_id');
             expect(user).to.have.property('email');
             expect(user).to.have.property('role');

@@ -20,8 +20,10 @@ class UserController {
 
     static async getAll(req, res, next) {
         try {
-            const users = await UserService.getAll();
-            res.status(200).json(users);
+            const page = Math.max(parseInt(req.query.page) || 1, 1);
+            const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 100);
+            const result = await UserService.getAll(page, limit);
+            res.status(200).json(result);
         } catch (error) {
             next(error);
         }

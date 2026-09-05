@@ -14,8 +14,10 @@ class OrderController {
 
     static async getAll(req, res, next) {
         try {
-            const orders = await OrderService.getAll();
-            res.status(200).json(orders);
+            const page = Math.max(parseInt(req.query.page) || 1, 1);
+            const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 100);
+            const result = await OrderService.getAll(page, limit);
+            res.status(200).json(result);
         } catch (error) {
             next(error);
         }

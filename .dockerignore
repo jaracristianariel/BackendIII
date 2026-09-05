@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.env
+.env.test
+.env.local
+.git
+.gitignore
+logs
+uploads
+coverage
+*.log
+README.md
+test
+.mocharc.json

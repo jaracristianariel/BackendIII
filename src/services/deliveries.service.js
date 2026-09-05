@@ -30,8 +30,8 @@ class DeliveryService {
         });
     }
 
-    static async getAll() {
-        return await DeliveryRepository.find();
+    static async getAll(page, limit) {
+        return await DeliveryRepository.findPaginated(page, limit);
     }
 
     static async getByIdWithTracking(id) {
@@ -57,7 +57,7 @@ class DeliveryService {
     static async delete(id) {
         return await DeliveryRepository.deleteById(id);
     }
-    
+
     static async uploadReceipt(id, file) {
         assertFilePresent(file);
 

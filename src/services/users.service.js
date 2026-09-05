@@ -26,8 +26,8 @@ class UserService {
         return user;
     }
 
-    static async getAll() {
-        return await UserRepository.find();
+    static async getAll(page, limit) {
+        return await UserRepository.findPaginated(page, limit);
     }
 
     static async getById(id) {
@@ -52,7 +52,7 @@ class UserService {
     static async delete(id) {
         return await UserRepository.deleteById(id);
     }
-    
+
     static async uploadDocument(id, file, documentType) {
         assertFilePresent(file);
 

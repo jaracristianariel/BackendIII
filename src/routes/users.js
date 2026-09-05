@@ -50,16 +50,32 @@ router.post('/', UserController.create);
  * /api/users:
  *   get:
  *     tags: [Users]
- *     summary: Lista todos los usuarios
+ *     summary: Lista usuarios de forma paginada
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *         description: Número de página
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20, maximum: 100 }
+ *         description: Cantidad de resultados por página
  *     responses:
  *       200:
- *         description: Lista de usuarios
+ *         description: Lista paginada de usuarios
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *                 total: { type: integer, example: 47 }
+ *                 page: { type: integer, example: 1 }
+ *                 limit: { type: integer, example: 20 }
+ *                 totalPages: { type: integer, example: 3 }
  */
 router.get('/', UserController.getAll);
 

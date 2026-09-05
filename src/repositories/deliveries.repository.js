@@ -9,6 +9,15 @@ class DeliveryRepository {
         return await Delivery.find();
     }
 
+    static async findPaginated(page, limit) {
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            Delivery.find().skip(skip).limit(limit),
+            Delivery.countDocuments(),
+        ]);
+        return { data, total, page, limit, totalPages: Math.ceil(total / limit) || 1 };
+    }
+
     static async findById(id) {
         return await Delivery.findById(id);
     }
@@ -17,19 +26,16 @@ class DeliveryRepository {
         return await Delivery.findByIdAndUpdate(id, { status }, { new: true });
     }
 
+    static async setReceipt(id, receiptMeta) {
+        return await Delivery.findByIdAndUpdate(id, { receipt: receiptMeta }, { new: true, runValidators: true });
+    }
+
     static async deleteById(id) {
         return await Delivery.findByIdAndDelete(id);
     }
 
     static async insertMany(deliveries) {
         return await Delivery.insertMany(deliveries);
-    }
-    static async setReceipt(id, receiptMeta) {
-        return await Delivery.findByIdAndUpdate(
-            id,
-            { receipt: receiptMeta },
-            { new: true, runValidators: true }
-        );
     }
 }
 

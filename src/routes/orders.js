@@ -49,16 +49,32 @@ router.post('/', OrderController.create);
  * /api/orders:
  *   get:
  *     tags: [Orders]
- *     summary: Lista todos los pedidos
+ *     summary: Lista pedidos de forma paginada
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *         description: Número de página
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20, maximum: 100 }
+ *         description: Cantidad de resultados por página
  *     responses:
  *       200:
- *         description: Lista de pedidos
+ *         description: Lista paginada de pedidos
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ *                 total: { type: integer, example: 47 }
+ *                 page: { type: integer, example: 1 }
+ *                 limit: { type: integer, example: 20 }
+ *                 totalPages: { type: integer, example: 3 }
  */
 router.get('/', OrderController.getAll);
 

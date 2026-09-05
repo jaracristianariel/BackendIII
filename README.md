@@ -1,153 +1,79 @@
-# ShipNow
+# ShipNow API
 
-API de demostracion de una plataforma de **logistica / envios**, construida con
-**Node.js + Express + MongoDB (Mongoose)**.
+API de logística/envíos construida con **Node.js + Express + MongoDB (Mongoose)**, desarrollada como proyecto del curso **Backend 3 de CoderHouse**.
 
-Este proyecto es **material didactico** del curso **Backend 3 de CoderHouse**.
-Es la **version 1 (baseline)**: una API funcional pero escrita a proposito con
-malas practicas, para que a lo largo del curso la refactoricemos hacia una
-arquitectura profesional.
+El proyecto arrancó como una base didáctica con malas prácticas a propósito, y se fue refactorizando módulo a módulo hacia una **arquitectura profesional por capas** (Router → Controller → Service → Repository → Model), con manejo centralizado de errores, logging, documentación interactiva, testing automatizado y carga de archivos.
 
-> ⚠️ **No copies este codigo como ejemplo de buenas practicas.** Es el punto de
-> partida "sucio" sobre el que vamos a trabajar.
+## Entidades
 
-## Que hace ShipNow
-
-Gestiona cinco entidades:
-
-- **Order** (envio/pedido): `customerName`, `customer` (ref a User), `address`, `weight`, `cost` (calculado), `status`, `priority`, `items` (array de `{ name, quantity, price }`), `courierId`.
-- **User** (cliente): `name`, `email`, `role` (admin / customer / driver).
+- **User** (cliente): `first_name`, `last_name`, `email`, `password`, `role` (`user` / `admin` / `courier`), `documents` (metadatos de archivos subidos).
+- **Product**: `name`, `price`, `stock`, `status` (`available` / `out_of_stock`).
 - **Courier** (repartidor): `name`, `zone`, `available`.
-- **Product** (producto): `name`, `price`, `stock`, `status` (available / out_of_stock).
-- **Delivery** (entrega): `orderId` (ref a Order), `courierId` (ref a Courier), `status` (assigned / in_transit / delivered), `assignedAt`.
+- **Order** (pedido): `customerName`, `customer` (ref a User), `address`, `weight`, `cost` (calculado: `weight * 10`), `status` (`pending` / `in_transit` / `delivered`), `priority` (`normal` / `high`), `items`, `courierId`, `receipt` (metadatos del comprobante).
+- **Delivery** (entrega): `orderId` (ref a Order), `courierId` (ref a Courier), `status` (`assigned` / `in_transit` / `delivered`), `assignedAt`, `receipt` (metadatos del comprobante).
 
-Regla de negocio principal (hoy embebida en la ruta de orders):
-`cost = weight * 10`. Al crear un envio tambien se dispara una notificacion falsa.
-Al consultar una entrega por id (`GET /api/deliveries/:id`) se llama inline a un
-"proveedor externo" de tracking falso (`src/services/trackingProvider.js`).
+## Cómo correrlo localmente
 
-## Como correrlo
-
-Requisitos: Node.js y una instancia de MongoDB corriendo en `localhost:27017`.
-
-Para levantar MongoDB rapido con Docker:
-
-```bash
-docker run -d -p 27017:27017 --name shipnow-mongo mongo
-```
-
-Tambien sirve una instalacion local de MongoDB o un cluster de MongoDB Atlas
-(en ese caso ajusta la URI hardcodeada en `src/db.js` y `src/seed.js`).
+Requisitos: Node.js y un cluster de MongoDB (Atlas o local).
 
 ```bash
 # 1. Instalar dependencias
 npm install
 
-# 2. (Opcional) Cargar datos de ejemplo relacionados
-npm run seed
+# 2. Crear tu archivo de variables de entorno a partir del ejemplo
+cp .env.example .env
+# completá PORT, SECRET y MONGODB_URI con tus datos reales
 
 # 3. Levantar el servidor
-npm start
-# o
 npm run dev
 ```
 
-El servidor queda escuchando en `http://localhost:8080`.
+El servidor queda escuchando en `http://localhost:8080` (o el puerto que hayas puesto en `.env`).
 
-### Endpoints
+### Correr los tests
 
-| Metodo | Ruta                       | Descripcion                       |
-| ------ | -------------------------- | --------------------------------- |
-| GET    | `/`                        | Health check basico               |
-| POST   | `/api/users`               | Crear cliente                     |
-| GET    | `/api/users`               | Listar clientes                   |
-| GET    | `/api/users/:id`           | Obtener cliente por id            |
-| POST   | `/api/products`            | Crear producto                    |
-| GET    | `/api/products`            | Listar productos                  |
-| GET    | `/api/products/:id`        | Obtener producto por id           |
-| POST   | `/api/couriers`            | Crear repartidor                  |
-| GET    | `/api/couriers`            | Listar repartidores               |
-| GET    | `/api/couriers/:id`        | Obtener repartidor por id         |
-| POST   | `/api/orders`              | Crear envio                       |
-| GET    | `/api/orders`              | Listar envios                     |
-| GET    | `/api/orders/:id`          | Obtener envio por id              |
-| PATCH  | `/api/orders/:id/status`   | Cambiar estado de un envio        |
-| POST   | `/api/deliveries`          | Crear entrega (order + courier)   |
-| GET    | `/api/deliveries`          | Listar entregas                   |
-| GET    | `/api/deliveries/:id`      | Obtener entrega + tracking        |
-| PATCH  | `/api/deliveries/:id/status` | Cambiar estado de una entrega   |
-
-Ejemplo de creacion de envio:
+Los tests usan un entorno y una base de datos **separados** de los de desarrollo:
 
 ```bash
-curl -X POST http://localhost:8080/api/orders \
-  -H "Content-Type: application/json" \
-  -d '{"customerName":"Ana Lopez","address":"Calle Falsa 123","weight":5}'
+cp .env.test.example .env.test
+# completá MONGODB_URI con una base de testing distinta a la de desarrollo
+
+npm test
 ```
 
-## Probar con Postman
+### Documentación interactiva (Swagger)
 
-En la carpeta `postman/` hay una coleccion lista para importar:
-`postman/ShipNow.postman_collection.json`.
+Con el servidor corriendo, entrá a `http://localhost:8080/api/docs` para ver y probar todos los endpoints desde el navegador.
 
-1. Abre Postman -> **Import** -> selecciona el archivo.
-2. La coleccion trae una variable `{{baseUrl}}` que por defecto apunta a
-   `http://localhost:8080`. Si cambias el puerto, edita esa variable.
-3. Hay una carpeta por entidad (Users, Products, Couriers, Orders, Deliveries)
-   con un request por endpoint. Los POST/PATCH incluyen un body JSON de ejemplo.
-4. Para los requests que usan `:id` (o refs como `customer`, `orderId`,
-   `courierId`), copia los ids reales de la respuesta de un GET/POST previo.
+## Endpoints principales
 
-## Deuda tecnica conocida
+| Método | Ruta                              | Descripción                          |
+| ------ | --------------------------------- | ------------------------------------- |
+| GET    | `/`                                | Health check básico                   |
+| POST/GET/PUT/DELETE | `/api/users`, `/api/users/:id` | CRUD de usuarios                |
+| POST   | `/api/users/:id/documents`        | Subir documento de un usuario         |
+| POST/GET/PUT/DELETE | `/api/products`, `/api/products/:id` | CRUD de productos          |
+| POST/GET/PUT/DELETE | `/api/couriers`, `/api/couriers/:id` | CRUD de repartidores       |
+| POST/GET/PATCH/DELETE | `/api/orders`, `/api/orders/:id`, `/api/orders/:id/status` | CRUD de pedidos + cambio de estado |
+| POST   | `/api/orders/:id/receipt`         | Subir comprobante de un pedido        |
+| POST/GET/PATCH/DELETE | `/api/deliveries`, `/api/deliveries/:id`, `/api/deliveries/:id/status` | CRUD de entregas + cambio de estado |
+| POST   | `/api/deliveries/:id/receipt`     | Subir comprobante de una entrega      |
+| GET/POST | `/api/mocks/*`                  | Datos simulados y carga de prueba (ver sección de Mocking) |
+| GET    | `/api/logs/test`                  | Prueba interna del logger             |
+| GET    | `/api/docs`                       | Documentación Swagger                 |
 
-Esta seccion es **intencional y honesta**: lista los problemas que el codigo tiene
-hoy a proposito, y que iremos resolviendo modulo a modulo durante el curso.
+## Historial de refactor (por módulo)
 
-1. **Configuracion hardcodeada.** La URI de Mongo (`src/db.js`), el `PORT` y un
-   `SECRET` falso (`src/index.js`) estan escritos directamente en el codigo, en
-   lugar de leerse desde variables de entorno (`.env` + `dotenv`) y una capa de
-   configuracion. *(Se corrige en el Modulo 1.)*
+1. **Configuración y constantes**: variables de entorno centralizadas (`env.config.js`), constantes de dominio congeladas.
+2. **Arquitectura por capas**: `users` y `products` refactorizados a Router → Controller → Service → Repository.
+3. **Mocking**: generación y carga de datos de prueba (ver detalle abajo).
+4. **Manejo de errores**: `CustomError` centralizado + middleware global (ver detalle abajo).
+5. **Logging**: Winston con niveles, rotación de archivos y endpoint de prueba (ver detalle abajo).
+6. **Documentación**: Swagger/OpenAPI interactivo (ver detalle abajo).
+7. **Testing**: suite funcional con Mocha, Chai y Supertest (ver detalle abajo).
+8. **Carga de archivos**: documentos y comprobantes con Multer (ver detalle abajo).
 
-2. **Controllers gordos (fat controllers) / logica en las rutas.** Cada handler
-   mezcla en un solo bloque la validacion manual, la logica de negocio, el acceso
-   directo a la base y los efectos secundarios. No hay capa de **services** ni de
-   **repositories**. El ejemplo mas claro es `src/routes/orders.js`.
-
-3. **Acoplamiento del efecto secundario.** La notificacion
-   (`src/services/notifications.js`) se importa y se llama inline dentro de la ruta
-   de orders, acoplando la logica de negocio con el envio de notificaciones.
-
-4. **Manejo de errores crudo.** Todos los `try/catch` responden con un generico
-   `res.status(500).send("Error del servidor")`. No hay una capa de errores ni
-   errores de dominio personalizados.
-
-5. **Logging pobre.** Solo se usa `console.log`. No hay un logger real con niveles,
-   formato ni transporte.
-
-6. **Validacion manual repetida.** Cada ruta (`products`, `deliveries`, `orders`,
-   etc.) repite chequeos `if (!campo)` a mano. No hay esquemas de validacion ni
-   middleware reutilizable.
-
-7. **Integracion externa acoplada.** El "proveedor de tracking"
-   (`src/services/trackingProvider.js`) se llama inline desde la ruta de
-   deliveries, sin abstraccion ni inyeccion. Sirve como ejemplo de algo que
-   habra que mockear en los tests.
-
-8. **Verificacion de relaciones en la ruta.** Al crear una delivery se hace
-   `Order.findById` / `Courier.findById` directo en el handler para validar que
-   existan, acoplando aun mas la ruta a la base.
-
-9. **Sin tests, sin Swagger, sin upload de archivos, sin Docker.** Estas piezas se
-   agregan en modulos posteriores; su ausencia aca es intencional. El script de
-   seed (`src/seed.js`) y la coleccion de Postman son tooling de apoyo, no
-   features de la API.
-
-## Roadmap del curso (que vamos a refactorizar)
-
-- **Modulo 1:** variables de entorno + capa de configuracion (matar el hardcode).
-- **Modulos siguientes:** capa de services y repositories, manejo de errores,
-  logger profesional, tests, documentacion con Swagger, uploads y Docker.
-# BackendIII
+---
 
 
 ## Mocking y carga de datos de prueba

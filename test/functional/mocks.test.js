@@ -21,7 +21,7 @@ describe('Mocks API', () => {
             await request(app).get('/api/mocks/users?qty=5');
 
             const res = await request(app).get('/api/users');
-            expect(res.body).to.have.lengthOf(0);
+            expect(res.body.data).to.have.lengthOf(0);
         });
 
         it('devuelve 400 si qty es negativo', async () => {
@@ -49,7 +49,7 @@ describe('Mocks API', () => {
             expect(res.body).to.deep.equal({ insertados: 4, coleccion: 'usuarios' });
 
             const listado = await request(app).get('/api/users');
-            expect(listado.body).to.have.lengthOf(4);
+            expect(listado.body.data).to.have.lengthOf(4);
         });
 
         it('devuelve 400 si qty es inválido', async () => {

@@ -19,6 +19,16 @@
             "date": 1788211879069,
             "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-08-31.log",
             "hash": "ea18815e064cd856e207a1634828631ae908d736e53cc49d41dacfeceb8961bf"
+        },
+        {
+            "date": 1788349259035,
+            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-09-02.log",
+            "hash": "e1ab223f83538b12d1f70452f5e3b347047cb98097a7cc0cae1940becbdd26b4"
+        },
+        {
+            "date": 1788446080749,
+            "name": "D:\\Ariel\\Desktop\\backend-III-85745-master\\logs\\info-2026-09-03.log",
+            "hash": "353fb10c9f3156422549f98e1c0e97a58726e25744bffa63176c70592eebde03"
         }
     ],
     "hashType": "sha256"

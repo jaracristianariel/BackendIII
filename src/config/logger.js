@@ -40,11 +40,9 @@ const fileFormat = winston.format.combine(
     winston.format.json(),
 );
 
-const isProduction = config.NODE_ENV === 'production';
-
 const logger = winston.createLogger({
     levels: customLevels.levels,
-    level: isProduction ? 'info' : 'debug',
+    level: config.LOG_LEVEL,
     transports: [
         new winston.transports.Console({
             format: consoleFormat,

@@ -33,8 +33,8 @@ class OrderService {
         return order;
     }
 
-    static async getAll() {
-        return await OrderRepository.find();
+    static async getAll(page, limit) {
+        return await OrderRepository.findPaginated(page, limit);
     }
 
     static async getById(id) {
@@ -55,7 +55,7 @@ class OrderService {
     static async delete(id) {
         return await OrderRepository.deleteById(id);
     }
-    
+
     static async uploadReceipt(id, file) {
         assertFilePresent(file);
 

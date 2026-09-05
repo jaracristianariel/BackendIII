@@ -16,6 +16,7 @@ const config = {
     SECRET: process.env.SECRET,
     MONGO_URI: process.env.MONGODB_URI,
     NODE_ENV: process.env.NODE_ENV,
+    LOG_LEVEL: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
 };
 
 export default config;
